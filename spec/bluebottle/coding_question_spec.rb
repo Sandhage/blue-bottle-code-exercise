@@ -23,7 +23,11 @@ describe BlueBottle::CodingQuestion do
   
   # Test three
   let(:liv_bella_donovan_subscription) { BlueBottle::Models::Subscription.new(4, nil, nil, 'inactive') }
-
+  
+  # Test four
+  let(:jack_bella_donovan_subscription) { BlueBottle::Models::Subscription.new(5, nil, nil, 'inactive') }
+  let(:jack_2_bella_donovan_subscription) { BlueBottle::Models::Subscription.new(6, nil, nil, 'inactive') }
+  
   before do
     store.add_customer(sally)
     store.add_customer(jack)
@@ -101,21 +105,30 @@ describe BlueBottle::CodingQuestion do
   context 'Cancelling:' do
     context 'when Jack cancels his subscription to Bella Donovan,' do
       before do
-        # Establish subscription here
+        jack_bella_donovan_subscription.customer_id = jack.id
+        jack_bella_donovan_subscription.coffee_id   = bella_donovan.id
+        jack_bella_donovan_subscription.status      = 'active'
+        jack_bella_donovan_subscription.status      = 'cancelled'
       end
 
-      xit 'Jack should have zero active subscriptions' do
+      it 'Jack should have zero active subscriptions' do
+        expect( BlueBottle::Models::Subscription.count_active_subscriptions_by_customer_id(jack.id) ).to eql(0)
       end
 
-      xit 'Bella Donovan should have zero active customers subscribed to it' do
+      it 'Bella Donovan should have zero active customers subscribed to it' do
+        expect( BlueBottle::Models::Subscription.count_subscriptions_by_coffee_id(bella_donovan.id) ).to eql(0)
       end
 
       context 'when Jack resubscribes to Bella Donovan' do
         before do
-          # Establish subscription here
+          jack_2_bella_donovan_subscription.customer_id = jack.id
+          jack_2_bella_donovan_subscription.coffee_id   = bella_donovan.id
+          jack_2_bella_donovan_subscription.status      = 'active'
         end
 
-        xit 'Bella Donovan has two subscriptions, one active, one cancelled' do
+        it 'Bella Donovan has two subscriptions, one active, one cancelled' do
+          expect( BlueBottle::Models::Subscription.count_subscriptions_by_coffee_id(bella_donovan.id) ).to eql(1)
+          expect( BlueBottle::Models::Subscription.count_cancelled_subscriptions_by_coffee_id(bella_donovan.id) ).to eql(1)
         end
 
       end
