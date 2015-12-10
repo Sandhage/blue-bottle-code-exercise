@@ -17,6 +17,13 @@ describe BlueBottle::CodingQuestion do
   # Test one
   let(:sally_bella_donovan_subscription) { BlueBottle::Models::Subscription.new(1, nil, nil, 'inactive') }
 
+  # Test two
+  let(:liv_hayes_valley_espresso_subscription) { BlueBottle::Models::Subscription.new(2, nil, nil, 'inactive') }
+  let(:elijah_hayes_valley_espresso_subscription) { BlueBottle::Models::Subscription.new(3, nil, nil, 'inactive') }
+  
+  # Test three
+  let(:liv_bella_donovan_subscription) { BlueBottle::Models::Subscription.new(4, nil, nil, 'inactive') }
+
   before do
     store.add_customer(sally)
     store.add_customer(jack)
@@ -36,41 +43,57 @@ describe BlueBottle::CodingQuestion do
     end
 
     it 'Sally should have one active subscription' do
-      expect( BlueBottle::Models::Subscription.count_active_subscriptions_by_customer_id(sally.id) ).to eql(2)
+      expect( BlueBottle::Models::Subscription.count_active_subscriptions_by_customer_id(sally.id) ).to eql(1)
     end
 
     it 'Bella Donovan should have one customer subscribed to it' do
+      expect( BlueBottle::Models::Subscription.count_subscriptions_by_coffee_id(bella_donovan.id) ).to eql(1)
     end
   end
 
   context 'Liv and Elijah subscribe to Hayes Valley Espresso,' do
     before do
-      # Establish subscriptions here
+      liv_hayes_valley_espresso_subscription.customer_id = liv.id
+      liv_hayes_valley_espresso_subscription.coffee_id   = hayes_valley_espresso.id
+      liv_hayes_valley_espresso_subscription.status      = 'active'
+      
+      elijah_hayes_valley_espresso_subscription.customer_id = elijah.id
+      elijah_hayes_valley_espresso_subscription.coffee_id   = hayes_valley_espresso.id
+      elijah_hayes_valley_espresso_subscription.status      = 'active'
     end
 
-    xit 'Liv should have one active subscription' do
+    it 'Liv should have one active subscription' do
+      expect( BlueBottle::Models::Subscription.count_active_subscriptions_by_customer_id(liv.id) ).to eql(1)
     end
 
-    xit 'Elijah should have one active subscription' do
+    it 'Elijah should have one active subscription' do
+      expect( BlueBottle::Models::Subscription.count_active_subscriptions_by_customer_id(elijah.id) ).to eql(1)
     end
 
-    xit 'Hayes Valley Espresso should have two customers subscribed to it' do
+    it 'Hayes Valley Espresso should have two customers subscribed to it' do
+      expect( BlueBottle::Models::Subscription.count_subscriptions_by_coffee_id(hayes_valley_espresso.id) ).to eql(2)
     end
   end
 
   context 'Pausing:' do
     context 'when Liv pauses her subscription to Bella Donovan,' do
       before do
-        # Establish subscription here
+        liv_bella_donovan_subscription.customer_id = liv.id
+        liv_bella_donovan_subscription.coffee_id   = bella_donovan.id
+        liv_bella_donovan_subscription.status      = 'active'
+        liv_bella_donovan_subscription.status      = 'paused'
       end
 
-      xit 'Liv should have zero active subscriptions' do
+      it 'Liv should have zero active subscriptions' do
+        expect( BlueBottle::Models::Subscription.count_active_subscriptions_by_customer_id(liv.id) ).to eql(0)
       end
 
-      xit 'Liv should have a paused subscription' do
+      it 'Liv should have a paused subscription' do
+        expect( BlueBottle::Models::Subscription.count_paused_subscriptions_by_customer_id(liv.id) ).to eql(1)
       end
 
-      xit 'Bella Donovan should have one customers subscribed to it' do
+      it 'Bella Donovan should have one customers subscribed to it' do
+        expect( BlueBottle::Models::Subscription.count_subscriptions_by_coffee_id(bella_donovan.id) ).to eql(1)
       end
     end
   end

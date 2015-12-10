@@ -27,6 +27,30 @@ module BlueBottle
           
           return count
       end
+      
+      def self.count_paused_subscriptions_by_customer_id(customer_id)
+          GC.start
+          subscriptions = ObjectSpace.each_object(self).to_a
+          
+          count = 0
+          subscriptions.each do |subscription|
+            count += 1 if subscription.customer_id == customer_id && subscription.status == 'paused'
+          end
+          
+          return count
+      end
+      
+      def self.count_subscriptions_by_coffee_id(coffee_id)
+          GC.start
+          subscriptions = ObjectSpace.each_object(self).to_a
+          
+          count = 0
+          subscriptions.each do |subscription|
+            count += 1 if subscription.coffee_id == coffee_id && ( subscription.status == 'active' || subscription.status == 'paused' )
+          end
+          
+          return count
+      end
     end
   end
 end
