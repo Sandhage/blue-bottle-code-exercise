@@ -14,6 +14,9 @@ describe BlueBottle::CodingQuestion do
   let(:store) { BlueBottle::DataStore.new }
   let(:subscription_service) { BlueBottle::Services::SubscriptionService.new(store) }
 
+  # Test one
+  let(:sally_bella_donovan_subscription) { BlueBottle::Models::Subscription.new(1, nil, nil, 'inactive') }
+
   before do
     store.add_customer(sally)
     store.add_customer(jack)
@@ -25,19 +28,22 @@ describe BlueBottle::CodingQuestion do
     store.add_coffee(hayes_valley_espresso)
   end
 
-  context 'Sally subscribes to Bella Donovan' do
+  context 'Sally subscribes to Bella Donovan,' do
     before do
-      # Establish subscription to Bella Donovan here
+      sally_bella_donovan_subscription.customer_id = sally.id
+      sally_bella_donovan_subscription.coffee_id   = bella_donovan.id
+      sally_bella_donovan_subscription.status      = 'active'
     end
 
-    xit 'Sally should have one active subscription' do
+    it 'Sally should have one active subscription' do
+      expect( BlueBottle::Models::Subscription.count_active_subscriptions_by_customer_id(sally.id) ).to eql(2)
     end
 
-    xit 'Bella Donovan should have one customer subscribed to it' do
+    it 'Bella Donovan should have one customer subscribed to it' do
     end
   end
 
-  context 'Liv and Elijah subscribe to Hayes Valley Espresso' do
+  context 'Liv and Elijah subscribe to Hayes Valley Espresso,' do
     before do
       # Establish subscriptions here
     end
