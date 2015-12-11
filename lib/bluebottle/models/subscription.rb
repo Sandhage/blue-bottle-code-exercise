@@ -63,6 +63,20 @@ module BlueBottle
           
         return count
       end
+      
+      def cancel_subscription
+        if @status != 'paused'
+          @status = 'cancelled'
+        else
+          'Exception!'
+        end
+      end
+      
+      def pause_subscription
+        if @status != 'paused'
+          @status = 'paused'
+        end
+      end
     end
   end
 end

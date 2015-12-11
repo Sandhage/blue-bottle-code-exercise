@@ -138,10 +138,14 @@ describe BlueBottle::CodingQuestion do
   context 'Cancelling while Paused:' do
     context 'when Jack tries to cancel his paused subscription to Bella Donovan,' do
       before do
-        # Establish paused subscription here
+        jack_bella_donovan_subscription.customer_id = jack.id
+        jack_bella_donovan_subscription.coffee_id   = bella_donovan.id
+        jack_bella_donovan_subscription.status      = 'active'
+        jack_bella_donovan_subscription.pause_subscription
       end
 
-      xit 'Jack raises an exception preventing him from cancelling a paused subscription' do
+      it 'Jack raises an exception preventing him from cancelling a paused subscription' do
+        expect(jack_bella_donovan_subscription.cancel_subscription).to eql('Exception!')
       end
     end
   end
